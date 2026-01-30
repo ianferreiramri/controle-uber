@@ -11,85 +11,27 @@ body{font-family:Arial;background:#f4f6f8;margin:0}
 h2{text-align:center}
 
 .cards{display:flex;gap:10px;flex-wrap:wrap}
-.card{
-  flex:1;
-  padding:15px;
-  border-radius:16px;
-  background:#fff;
-  font-weight:bold;
-  text-align:center;
-  box-shadow:0 2px 6px rgba(0,0,0,.08)
-}
+.card{flex:1;padding:15px;border-radius:16px;background:#fff;font-weight:bold;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 
-.box{
-  background:#fff;
-  padding:15px;
-  border-radius:16px;
-  margin:20px 0;
-  box-shadow:0 2px 6px rgba(0,0,0,.08)
-}
+.box{background:#fff;padding:15px;border-radius:16px;margin:20px 0;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 
-button{
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  background:#4caf50;
-  color:#fff;
-  font-size:15px;
-  cursor:pointer;
-  width:100%;
-}
-
+button{padding:12px;border-radius:12px;border:none;background:#4caf50;color:#fff;font-size:15px;cursor:pointer;width:100%}
 button.red{background:#e53935}
 button.gray{background:#607d8b}
 
-.people{
-  display:flex;
-  gap:10px;
-  margin:10px 0
-}
-.people button{
-  background:#ddd;
-  color:#000
-}
+.people{display:flex;gap:10px;margin:10px 0}
+.people button{background:#ddd;color:#000}
 
-input,select{
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border-radius:12px;
-  border:1px solid #ccc;
-  font-size:15px
-}
+input,select{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:1px solid #ccc;font-size:15px}
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:500px
-}
-td,th{
-  border-bottom:1px solid #ddd;
-  padding:8px;
-  text-align:center
-}
+table{width:100%;border-collapse:collapse;min-width:500px}
+td,th{border-bottom:1px solid #ddd;padding:8px;text-align:center}
 
 .scroll{overflow:auto}
 
-.toast{
-  position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#323232;
-  color:#fff;
-  padding:12px 20px;
-  border-radius:20px;
-  display:none
-}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#323232;color:#fff;padding:12px 20px;border-radius:20px;display:none}
 
-@media(max-width:600px){
-  .cards{flex-direction:column}
-}
+@media(max-width:600px){.cards{flex-direction:column}}
 </style>
 </head>
 
@@ -100,17 +42,14 @@ td,th{
 <div class="container">
 <h2>🚗 Controle de Viagens Uber</h2>
 
-<!-- SALDOS -->
 <div class="cards">
   <div class="card" id="sIan">Ian: R$ 0,00</div>
   <div class="card" id="sLuan">Luan: R$ 0,00</div>
   <div class="card" id="sJoao">João: R$ 0,00</div>
 </div>
 
-<!-- NOVA VIAGEM -->
 <div class="box">
 <h3>➕ Nova viagem</h3>
-
 <input type="date" id="data">
 
 <div class="people">
@@ -123,21 +62,17 @@ td,th{
 <button onclick="salvarViagem()">Salvar viagem</button>
 </div>
 
-<!-- PAGAMENTO -->
 <div class="box">
 <h3>💸 Registrar pagamento</h3>
-
 <select id="pagPessoa">
   <option>Ian</option>
   <option>Luan</option>
   <option>João</option>
 </select>
-
 <input type="number" id="pagValor" placeholder="Valor pago">
 <button onclick="registrarPagamento()">Registrar pagamento</button>
 </div>
 
-<!-- RESUMO -->
 <div class="box">
 <h3>📅 Resumo mensal</h3>
 <div class="scroll">
@@ -150,7 +85,6 @@ td,th{
 </div>
 </div>
 
-<!-- HISTÓRICO -->
 <div class="box">
 <h3>📊 Histórico</h3>
 <div class="scroll">
@@ -163,25 +97,21 @@ td,th{
 </div>
 </div>
 
-<!-- BANCO -->
-<div class="box">
-<h3>💾 Banco de dados</h3>
-<button class="gray" onclick="exportarBanco()">Exportar banco</button>
-<input type="file" onchange="importarBanco(this)">
-</div>
-
 </div>
 
 <script>
+// ===== CONFIG GITHUB =====
+const GITHUB_USER = "ianferreiramri";
+const GITHUB_REPO = "controle-uber";
+const FILE_PATH   = "banco.json";
+const BRANCH      = "main";
+const TOKEN       = "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";
+
+// ===== APP =====
 let banco={viagens:[],pagamentos:[]};
 let pessoasSel=[];
 
-fetch('banco.json')
-.then(r=>r.json())
-.then(d=>{
-  banco=d;
-  renderizar();
-});
+fetch('banco.json').then(r=>r.json()).then(d=>{banco=d;renderizar();});
 
 function showToast(msg){
   toast.innerText=msg;
@@ -211,39 +141,29 @@ function resetPeople(){
 
 function salvarViagem(){
   if(!data.value||!valor.value||pessoasSel.length===0)return;
-  banco.viagens.push({
-    data:data.value,
-    pessoas:[...pessoasSel],
-    valor:+valor.value
-  });
-  resetPeople();
-  valor.value='';
-  showToast('✅ Viagem salva com sucesso');
-  renderizar();
+  banco.viagens.push({data:data.value,pessoas:[...pessoasSel],valor:+valor.value});
+  resetPeople(); valor.value='';
+  renderizar(); salvarNoGitHub();
+  showToast('✅ Viagem salva e sincronizada');
 }
 
 function registrarPagamento(){
   if(!pagValor.value)return;
-  banco.pagamentos.push({
-    pessoa:pagPessoa.value,
-    valor:+pagValor.value
-  });
+  banco.pagamentos.push({pessoa:pagPessoa.value,valor:+pagValor.value});
   pagValor.value='';
-  showToast('💸 Pagamento registrado');
-  renderizar();
+  renderizar(); salvarNoGitHub();
+  showToast('💸 Pagamento sincronizado');
 }
 
 function apagar(i){
   if(confirm('Apagar viagem?')){
     banco.viagens.splice(i,1);
-    renderizar();
+    renderizar(); salvarNoGitHub();
   }
 }
 
 function renderizar(){
-  montarTabela();
-  calcularSaldo();
-  montarResumo();
+  montarTabela(); calcularSaldo(); montarResumo();
 }
 
 function montarTabela(){
@@ -266,7 +186,6 @@ function calcularSaldo(){
     r.pessoas.forEach(p=>s[p]+=parte);
   });
   banco.pagamentos.forEach(p=>s[p.pessoa]-=p.valor);
-
   sIan.innerText=`Ian: R$ ${s.Ian.toFixed(2)}`;
   sLuan.innerText=`Luan: R$ ${s.Luan.toFixed(2)}`;
   sJoao.innerText=`João: R$ ${s.João.toFixed(2)}`;
@@ -292,24 +211,24 @@ function montarResumo(){
   });
 }
 
-function exportarBanco(){
-  const blob=new Blob([JSON.stringify(banco,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='banco.json';
-  a.click();
-}
+// ===== GITHUB SYNC =====
+async function salvarNoGitHub(){
+  const url=`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${FILE_PATH}`;
+  const res=await fetch(url,{headers:{Authorization:`Bearer ${TOKEN}`}});
+  const j=await res.json();
 
-function importarBanco(inp){
-  const f=inp.files[0];
-  if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    banco=JSON.parse(e.target.result);
-    renderizar();
-    showToast('📥 Banco importado');
-  };
-  r.readAsText(f);
+  const content=btoa(unescape(encodeURIComponent(JSON.stringify(banco,null,2))));
+
+  await fetch(url,{
+    method:'PUT',
+    headers:{Authorization:`Bearer ${TOKEN}`,'Content-Type':'application/json'},
+    body:JSON.stringify({
+      message:'Atualização automática do banco',
+      content:content,
+      sha:j.sha,
+      branch:BRANCH
+    })
+  });
 }
 </script>
 
